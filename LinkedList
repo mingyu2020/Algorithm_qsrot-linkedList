@@ -1,0 +1,63 @@
+/*
+연결리스트 = 연속된 '노드'의 연결
+  노드 = 데이터+링크의 2가지 필드를 담고있는 구조
+    링크 = 다음 노드의 주소
+*/
+
+#include <iostream>
+
+struct Node { // Node = 연결리스트의 기본 단위
+  int data;   // data = 노드가 저장하는 데이터
+  Node *next; // next = 다음 노드를 가리키는 포인터
+  Node(int d) : data(d), next(nullptr) {}
+    //생성자 : 노드를 생성할 때 데이터를 초기화하고, next 포인터를 nullptr로 초기화
+      //tail의 다음 노드는 존재하지 않기 때문에 null
+};
+
+class LinkedList {
+  Node *head; // head = 리스트 첫 노드를 가리키는 포인터
+public:
+  LinkedList() : head(nullptr) {} 
+    //생성자 = 리스트가 비어있을 때 head를 nullptr로 초기화
+
+  void add(int d) { //리스트 끝에 노드를 추가하는 함수이며
+                    //새로운 노드를 동적으로 생성
+
+    Node *n = new Node(d);
+    if (!head) {      //리스트가 비어있으면 (head가 nullptr이면)
+      head = n;       //새로운 노드를 head로 설정
+    } else {          //그렇지 않으면
+      Node *t = head; //리스트의 끝까지 이동하여 새로운 노드 추가
+      while (t->next)
+        t = t->next;
+      t->next = n;
+    }
+  }
+
+  void print() {    //리스트의 모든 노드를 출력하는 함수,
+    Node *t = head; //head부터 시작하여
+    while (t) {     //노드를 순회하면서
+      std::cout << t->data << " "; //데이터를 출력
+      t = t->next;
+    }
+    std::cout << std::endl;
+  }
+
+  /*소멸자, 리스트의 모든 노드를 삭제하여 메모리를 해제*/
+  ~LinkedList() {
+    while (head) {
+      Node *t = head;    // head가 nullptr이 될 때까지
+      head = head->next; //리스트의 모든 노드를 순회하면서
+      delete t;          //삭제함.
+    }
+  }
+};
+
+int main() {
+  LinkedList list; //LinkedList 객체 'list' 생성
+  list.add(1);     //리스트에 1 추가
+  list.add(2);     //리스트에 2 추가
+  list.add(3);     //리스트에 3 추가
+  list.print();    //리스트의 모든 노드 출력
+  return 0;  //소멸자 호출, 동적 메모리를 해제함
+}
